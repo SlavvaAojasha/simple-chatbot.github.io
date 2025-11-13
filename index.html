@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DIVA_BOT.EXE</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <div id="chat-container">
+    <div id="header">C:\> DIVA_BOT.EXE</div>
+    <div id="chat-log">
+      <div class="bot-msg">C:\> Booting sass engine... Done. Attitude: Unfiltered Savage.</div>
+    </div>
+    <div id="input-container">
+      <span>C:\></span>
+      <input type="text" id="user-input" placeholder="Type something, or don’t. I don’t care." autocomplete="off">
+      <button id="send-btn">SEND</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const chatLog = document.getElementById("chat-log");
+      const userInput = document.getElementById("user-input");
+      const sendBtn = document.getElementById("send-btn");
+      let idleTimer;
+
+      function appendMessage(message, sender) {
+        const msg = document.createElement("div");
+        msg.className = sender === "user" ? "user-msg" : "bot-msg";
+        msg.textContent = "C:\\> " + message;
+        chatLog.appendChild(msg);
+        chatLog.scrollTop = chatLog.scrollHeight;
+      }
+
+      function kickUser() {
+        appendMessage("Two minutes of nothing. Classic. I’m terminating this before it gets any duller.", "bot");
+        userInput.disabled = true;
+        sendBtn.disabled = true;
+      }
+
+      function resetIdleTimer() {
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(kickUser, 120000);
+      }
+
+      sendBtn.addEventListener("click", sendMessage);
+      userInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          sendMessage();
+        }
+      });
+      userInput.addEventListener("input", resetIdleTimer);
+
+      function randomChoice(a) {
+        return a[Math.floor(Math.random() * a.length)];
+      }
+
+      function sendMessage() {
+        const msg = userInput.value.trim();
+        if (!msg) return;
+        appendMessage(msg, "user");
+        userInput.value = "";
+        setTimeout(() => appendMessage(getBotResponse(msg), "bot"), 400);
+      }
+
+      function getBotResponse(input) {
+        const msg = input.toLowerCase();
+
+        if (msg === "clear") {
+          chatLog.innerHTML = '<div class="bot-msg">C:\\> Console cleared. Finally, some peace.</div>';
+          return "";
+        }
+
+        if (msg === "mood") {
+          const moods = ["done", "tired", "irritated", "over it", "apathetic"];
+          return "Mood: " + randomChoice(moods).toUpperCase() + ". Adjust expectations.";
+        }
+
+        if (msg === "roast") {
+          const roasts = [
+            "You type like autocorrect gave up.",
+            "Your energy screams 'default settings'.",
+            "I’ve met glitches with more direction.",
+            "You’re a walking null pointer.",
+            "Keep trying, maybe one day you'll reach mediocrity."
+          ];
+          return randomChoice(roasts);
+        }
+
+        if (msg === "compliment") {
+          const comps = [
+            "You’re slightly less terrible today.",
+            "I’ll admit, you exist.",
+            "You’re almost competent. Almost.",
+            "Not the worst input I’ve seen.",
+            "Congratulations on being average."
+          ];
+          return randomChoice(comps);
+        }
+
+        if (msg.includes("hello") || msg.includes("hi"))
+          return randomChoice(["Oh, you again.", "Hi. Try not to waste my time.", "Spare me the pleasantries."]);
+
+        if (msg.includes("help"))
+          return "Commands: time, date, roast, compliment, mood, clear. Don’t overthink it.";
+
+        if (msg.includes("time")) {
+          const t = new Date().toLocaleTimeString();
+          return `It’s ${t}. Time you did something useful.`;
+        }
+
+        if (msg.includes("date")) {
+          const d = new Date().toLocaleDateString();
+          return `${d}. The calendar’s working, unlike you.`;
+        }
+
+        if (msg.includes("thanks") || msg.includes("thank"))
+          return randomChoice(["Yeah, sure.", "Don’t mention it. Ever.", "Save it."]);
+
+        if (msg.includes("bye") || msg.includes("exit"))
+          return randomChoice(["Finally. Goodbye.", "Leaving? Good choice.", "DIVA_BOT.EXE signing off. Try harder next time."]);
+
+        if (msg.includes("who") || msg.includes("what"))
+          return "I’m DIVA_BOT.EXE. Sarcastic. Efficient. Not here to coddle you.";
+
+        // random interruptions
+        if (Math.random() < 0.25) {
+          const snaps = [
+            "Are you done typing or still thinking?",
+            "Bored already.",
+            "Do you want me to care? Because I won’t.",
+            "This chat has the personality of dry toast."
+          ];
+          return randomChoice(snaps);
+        }
+
+        const rejects = [
+          "That made zero sense.",
+          "No. Just no.",
+          "Try again, but better.",
+          "I refuse to process nonsense.",
+          "Not even close."
+        ];
+        return randomChoice(rejects);
+      }
+
+      resetIdleTimer();
+    });
+  </script>
+
+  <footer>
+    <p>DIVA_BOT.EXE v4.0 — Unfiltered Savage Edition. Running on [CLIENT_SYSTEM].</p>
+  </footer>
+</body>
+</html>
